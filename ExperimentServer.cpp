@@ -10,6 +10,15 @@ void ExperimentServer::attachTerminal( Serial & terminal) {
     _terminal = &terminal;
 } 
 
+void ExperimentServer::init() {
+    // default configuration  
+    char ip_address[] = "192.168.1.100";
+    char subnet_mask[]= "255.255.255.0";
+    char gateway[]    = "192.168.1.1";
+    int server_port   = 11223;
+    init(ip_address,subnet_mask,gateway, server_port);
+}   
+    
 void ExperimentServer::init(const char * ip_addr, const char * subnet_mask, const char * gateway, unsigned int port) {
     if(_terminal!=NULL) {
         _terminal->printf("\n==============================\nStarting Server\n");

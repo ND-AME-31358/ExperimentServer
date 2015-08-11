@@ -10,6 +10,8 @@ class ExperimentServer
 public:
     ExperimentServer();
     void attachTerminal( Serial & terminal); 
+    
+    void init();
     void init(const char * addr, const char * subnet, const char * host, unsigned int port);
     
     int getParams(float params[], int num_params);
