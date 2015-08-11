@@ -6,15 +6,12 @@ ExperimentServer::ExperimentServer() {
     _data_cnt = 0;
 }
 
-void ExperimentServer::attachTerminal( Serial & terminal)
-{
+void ExperimentServer::attachTerminal( Serial & terminal) {
     _terminal = &terminal;
 } 
 
-void ExperimentServer::init(const char * ip_addr, const char * subnet_mask, const char * gateway, unsigned int port)
-{
-    if(_terminal!=NULL)
-    {
+void ExperimentServer::init(const char * ip_addr, const char * subnet_mask, const char * gateway, unsigned int port) {
+    if(_terminal!=NULL) {
         _terminal->printf("\n==============================\nStarting Server\n");
         _terminal->printf("...Intializing Ethernet\n");
     }
@@ -32,38 +29,28 @@ void ExperimentServer::init(const char * ip_addr, const char * subnet_mask, cons
         _terminal->printf("...Listening on Port %d\n", port);
 }
 
-
-
-
-int ExperimentServer::getParams(float params[], int num_params)
-{
-    if(_terminal!=NULL)
-    {
+int ExperimentServer::getParams(float params[], int num_params) {
+    if(_terminal!=NULL) {
         _terminal->printf("\n========================\nNew Experiment\n");
         _terminal->printf("...Waiting for parameters...\n");
     }
         
     int n = _server.receiveFrom(_client,(char *) params, sizeof(params)*sizeof(float));    
-    if ( (n% 4) > 0 )
-    {
+    if ( (n% 4) > 0 ) {
         if(_terminal!=NULL)
             _terminal->printf("ERROR: input data bad size\n");
         return false;    
     }
-    if ( n / 4 != num_params)
-    {
+    if ( n / 4 != num_params) {
         if(_terminal!=NULL)
             _terminal->printf("ERROR: input data bad size\n");
-            
         return false;    
     }
     
-    if(_terminal!=NULL)
-    {
+    if(_terminal!=NULL) {
         _terminal->printf("...Received input from: %s\n", _client.get_address());
         _terminal->printf("...Parameters: \n");
-        for ( int j = 0 ; j < n/sizeof(float) ; j++)
-        {
+        for ( int j = 0 ; j < n/sizeof(float) ; j++) {
             _terminal->printf("      %d) %f\n",j+1,params[j]);
         }
     }
@@ -77,12 +64,9 @@ void ExperimentServer::flushBuffer() {
 }
 
 void ExperimentServer::sendData(float data_output[], int data_size) {
-    if( data_size + _data_cnt > _MAX_BUFFER_SIZE)
-    {
-        //_terminal->printf("@%d + %d, flushing\n");
+    if( data_size + _data_cnt > _MAX_BUFFER_SIZE) {
         flushBuffer();
     }
-        
     for(int j = 0; j < data_size; j++) {
         _buffer[ _data_cnt++ ] = data_output[j];    
     }
