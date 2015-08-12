@@ -86,6 +86,6 @@ void ExperimentServer::sendData(float data_output[], int data_size) {
 }
 void ExperimentServer::setExperimentComplete() {
     flushBuffer();
-    char buff = {'0'};
+    char buff[] = {'0'};
     _server.sendTo(_client,buff,1);
 }   
