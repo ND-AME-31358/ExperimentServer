@@ -46,13 +46,17 @@ int ExperimentServer::getParams(float params[], int num_params) {
         
     int n = _server.receiveFrom(_client,(char *) params, sizeof(params)*sizeof(float));    
     if ( (n% 4) > 0 ) {
-        if(_terminal!=NULL)
+        if(_terminal!=NULL) {
             _terminal->printf("ERROR: input data bad size\n");
+            _terminal->printf("ERROR: Expected %d got %d\n",4*num_params,n);
+        }
         return false;    
     }
     if ( n / 4 != num_params) {
-        if(_terminal!=NULL)
+        if(_terminal!=NULL) {
             _terminal->printf("ERROR: input data bad size\n");
+            _terminal->printf("ERROR: Expected %d got %d\n",4*num_params,n);
+        }
         return false;    
     }
     
@@ -82,4 +86,6 @@ void ExperimentServer::sendData(float data_output[], int data_size) {
 }
 void ExperimentServer::setExperimentComplete() {
     flushBuffer();
+    char buff = {'0'};
+    _server.sendTo(_client,buff,1);
 }   
