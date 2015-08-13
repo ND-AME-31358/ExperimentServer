@@ -10,14 +10,11 @@
 class ExperimentServer
 {
 public:
-
     /**
      * Constructor.
      *
      * Constructs an empty experiment server. Server objects require additional
      * initialization before being used.
-     * Constructs an empty experiment server. Server objects require further
-     * initialization before use.
      */
     ExperimentServer();
     
@@ -38,7 +35,6 @@ public:
      * subnet <tt>255.255.255.0</tt>, gateway <tt>192.168.1.1</tt>, port <tt>11223</tt>.
      */    
     void init();
-    
     /**
      * Initialize the server with supplied configuration.
      *
