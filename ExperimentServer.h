@@ -8,8 +8,22 @@ typedef void (*p_handler)(float[]);
 class ExperimentServer
 {
 public:
+     /**
+     * Constructor.
+     *
+     * Constructs an empty experiment server. Server objects require further
+     * initialization before use.
+     */
     ExperimentServer();
+    
+     /**
+     *
+     * Links a serial terminal with the server for debugging.
+     *
+     * @param terminal Serial terminal to be used for debug messages
+     */
     void attachTerminal( Serial & terminal); 
+    
     void init(const char * addr, const char * subnet, const char * host, unsigned int port);
     
     int getParams(float params[], int num_params);
