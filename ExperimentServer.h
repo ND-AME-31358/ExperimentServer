@@ -90,7 +90,7 @@ private:
     void flushBuffer(); // Sends all data in buffer to the host
     
     EthernetInterface _eth; // Low level ethernet object
-    Endpoint _client;       // Stores client connected to server
+    SocketAddress _client;       // Stores client connected to server
     UDPSocket _server;      // Low level UDP server object
     Serial * _terminal;     // Pointer to attached terminal for debugging
     

@@ -24,18 +24,38 @@ void ExperimentServer::init(const char * ip_addr, const char * subnet_mask, cons
         _terminal->printf("\r\n==============================\r\nStarting Server\r\n");
         _terminal->printf("...Intializing Ethernet\r\n");
     }
-    _eth.init(ip_addr,subnet_mask,gateway);
     
-    if(_terminal!=NULL)
-        _terminal->printf("...Connecting\r\n");    
-    _eth.connect();
+    int code = _eth.set_network(ip_addr,subnet_mask,gateway);
+    if(_terminal!=NULL) {
+        _terminal->printf("...Connecting\r\n");
+        if(code!=0) 
+            _terminal->printf("Error Code = %d\r\n",code);
+    }
+       
+    code = _eth.connect();
+    if(_terminal!=NULL) {
+        _terminal->printf("...Ethernet IP Address is %s\r\n",_eth.get_ip_address());
+        if(code!=0) 
+            _terminal->printf("Error Code = %d\r\n",code);    
+    }
     
-    if(_terminal!=NULL)
-        _terminal->printf("...Ethernet IP Address is %s\r\n", _eth.getIPAddress());
+    SocketAddress sock;
+    sock.set_port(port);
+    sock.set_ip_address(ip_addr);
     
-    _server.bind(port);
-    if(_terminal!=NULL)
-        _terminal->printf("...Listening on Port %d\r\n", port);
+    code = _server.open(&_eth);
+    if(_terminal!=NULL) {
+        _terminal->printf("...Opened\n");
+        if(code!=0) 
+            _terminal->printf("Error Code = %d\r\n",code);    
+    }
+    
+    code = _server.bind(sock);
+    if(_terminal!=NULL) {
+        _terminal->printf("...Listening on Port %d\r\n",port);
+        if(code!=0) 
+            _terminal->printf("Error Code = %d\r\n",code);
+    }
 }
 
 int ExperimentServer::getParams(float params[], int num_params) {
@@ -44,7 +64,7 @@ int ExperimentServer::getParams(float params[], int num_params) {
         _terminal->printf("...Waiting for parameters...\r\n");
     }
         
-    int n = _server.receiveFrom(_client,(char *) params, num_params*sizeof(float));    
+    int n = _server.recvfrom(&_client,(char *) params, num_params*sizeof(float));    
     if ( (n% 4) > 0 ) {
         if(_terminal!=NULL) {
             _terminal->printf("ERROR: input data bad size\r\n");
@@ -61,7 +81,7 @@ int ExperimentServer::getParams(float params[], int num_params) {
     }
     
     if(_terminal!=NULL) {
-        _terminal->printf("...Received input from: %s\r\n", _client.get_address());
+        _terminal->printf("...Received input from: %s\r\n", _client.get_ip_address());
         _terminal->printf("...Parameters: \r\n");
         for ( int j = 0 ; j < n/sizeof(float) ; j++) {
             _terminal->printf("      %d) %f\r\n",j+1,params[j]);
@@ -71,7 +91,7 @@ int ExperimentServer::getParams(float params[], int num_params) {
 }
 void ExperimentServer::flushBuffer() {
     if(_data_cnt > 0) {
-         _server.sendTo(_client,(char*) _buffer, 4*_data_cnt );    
+         _server.sendto(_client,(char*) _buffer, 4*_data_cnt );    
         _data_cnt = 0;
     }
 }
@@ -87,5 +107,5 @@ void ExperimentServer::sendData(float data_output[], int data_size) {
 void ExperimentServer::setExperimentComplete() {
     flushBuffer();
     char buff[] = {'0'};
-    _server.sendTo(_client,buff,1);
+    _server.sendto(_client,buff,1);
 }   
