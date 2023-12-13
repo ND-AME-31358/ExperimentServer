@@ -29,14 +29,14 @@ void ExperimentServer::init(const char * ip_addr, const char * subnet_mask, cons
     if(_terminal!=NULL) {
         _terminal->printf("...Connecting\r\n");
         if(code!=0) 
-            _terminal->printf("Error Code = %d\r\n",code);
+            error("Error Code = %d\r\n",code);
     }
        
     code = _eth.connect();
     if(_terminal!=NULL) {
         _terminal->printf("...Ethernet IP Address is %s\r\n",_eth.get_ip_address());
         if(code!=0) 
-            _terminal->printf("Error Code = %d\r\n",code);    
+            error("Error Code = %d\r\n",code);    
     }
     
     SocketAddress sock;
@@ -47,14 +47,14 @@ void ExperimentServer::init(const char * ip_addr, const char * subnet_mask, cons
     if(_terminal!=NULL) {
         _terminal->printf("...Opened\n");
         if(code!=0) 
-            _terminal->printf("Error Code = %d\r\n",code);    
+            error("Error Code = %d\r\n",code);    
     }
     
     code = _server.bind(sock);
     if(_terminal!=NULL) {
         _terminal->printf("...Listening on Port %d\r\n",port);
         if(code!=0) 
-            _terminal->printf("Error Code = %d\r\n",code);
+            error("Error Code = %d\r\n",code);
     }
 }
 
